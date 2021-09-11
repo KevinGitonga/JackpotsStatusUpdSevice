@@ -1,0 +1,3 @@
+# JackpotsStatusUpdSevice
+Jackpots status updater service.
+This service updates the status of Jackpot Tips data and their winning and loosing rate...
