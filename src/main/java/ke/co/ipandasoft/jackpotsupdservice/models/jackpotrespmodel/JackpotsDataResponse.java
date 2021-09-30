@@ -34,6 +34,28 @@ public class JackpotsDataResponse {
     @SerializedName("fixtures")
     @Expose
     private List<Fixture> fixtures = null;
+    @SerializedName("total_fixtures_won")
+    @Expose
+    private String totalFixturesWon;
+    @SerializedName("total_fixtures_lost")
+    @Expose
+    private String totalFixturesLost;
+
+    public String getTotalFixturesWon() {
+        return totalFixturesWon;
+    }
+
+    public void setTotalFixturesWon(String totalFixturesWon) {
+        this.totalFixturesWon = totalFixturesWon;
+    }
+
+    public String getTotalFixturesLost() {
+        return totalFixturesLost;
+    }
+
+    public void setTotalFixturesLost(String totalFixturesLost) {
+        this.totalFixturesLost = totalFixturesLost;
+    }
 
     public Integer getId() {
         return id;

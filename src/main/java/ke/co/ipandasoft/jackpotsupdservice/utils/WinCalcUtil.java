@@ -4,7 +4,13 @@ import ke.co.ipandasoft.jackpotsupdservice.constants.ApiConstants;
 import ke.co.ipandasoft.jackpotsupdservice.models.apipostdatamodel.JpWinLostDataModel;
 import ke.co.ipandasoft.jackpotsupdservice.models.jackpotrespmodel.Fixture;
 
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+
+import static ke.co.ipandasoft.jackpotsupdservice.JackpotsStatusUpdService.logger;
 
 public class WinCalcUtil {
 
@@ -31,5 +37,29 @@ public class WinCalcUtil {
         jpWinLostDataModel.setCancelledFixtures(cancelledNumber.toString());
 
         return jpWinLostDataModel;
+    }
+
+    public static final Fixture getLastPlayFixture(List<Fixture> fixtureList){
+        Fixture lastFixture;
+
+        Collections.sort(fixtureList, (m1, m2) -> {
+            SimpleDateFormat apiDateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm a");
+
+            Date parsedHomeDate = null;
+            Date parsedAwayDate = null;
+
+            try {
+                parsedHomeDate = apiDateFormatter.parse(m1.getFixtureDate()+" "+m1.getFixtureEatTime());
+                parsedAwayDate = apiDateFormatter.parse(m2.getFixtureDate()+" "+m2.getFixtureEatTime());
+            }catch (Exception exception){
+                logger.error(exception.getMessage());
+            }
+
+
+            return parsedHomeDate.compareTo(parsedAwayDate);
+        });
+
+
+        return fixtureList.get(fixtureList.size()-1);
     }
 }
