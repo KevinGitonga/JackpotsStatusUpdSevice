@@ -31,7 +31,7 @@ public class JackpotsStatusUpdService implements HttpFunction {
     private JackpotsApiService jackpotsApiService;
     private JackpotsApiSyncClient jackpotsApiSyncClient;
 
-    private static final Gson gson=new Gson();
+    public static final Gson gson=new Gson();
     private static HttpResponse httpResponse;
     private String queryType;
 
@@ -75,7 +75,7 @@ public class JackpotsStatusUpdService implements HttpFunction {
 
             logger.info("LAST JACKPOT DATA OBJ"+gson.toJson(lastFixture));
 
-            if (TimeProvider.isJackpotCompleted(lastFixture.getFixtureDate(),lastFixture.getFixtureEatTime())){
+            if (!lastFixture.getFixtureAiTipStatus().equals(ApiConstants.MATCH_STATUS_PENDING) && TimeProvider.isJackpotCompleted(lastFixture.getFixtureDate(),lastFixture.getFixtureEatTime())){
                 JpWinLostDataModel jpWinLostDataModel = WinCalcUtil.checkWinners(fixtureList);
                 jackpotsDataResponse.setJackpotStatus(ApiConstants.JACKPOT_ENDED);
                 jackpotsDataResponse.setTotalFixturesWon(jpWinLostDataModel.getWonFixtures()+"/"+fixtureList.size());
@@ -88,7 +88,6 @@ public class JackpotsStatusUpdService implements HttpFunction {
     private void updateJackpotGamesStatus(JackpotsDataResponse jackpotsDataResponse) {
         logger.info("JACKPOT OBJ BEING POSTED TO API"+gson.toJson(jackpotsDataResponse));
         jackpotsApiSyncClient.updateJackpotObjStatus(apiAuthUserToken,jackpotsDataResponse,jackpotsDataResponse.getId());
-        }
-
+    }
 
 }

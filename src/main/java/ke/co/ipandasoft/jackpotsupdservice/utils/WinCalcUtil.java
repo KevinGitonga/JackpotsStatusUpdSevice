@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import static ke.co.ipandasoft.jackpotsupdservice.JackpotsStatusUpdService.gson;
 import static ke.co.ipandasoft.jackpotsupdservice.JackpotsStatusUpdService.logger;
 
 public class WinCalcUtil {
@@ -40,7 +41,6 @@ public class WinCalcUtil {
     }
 
     public static final Fixture getLastPlayFixture(List<Fixture> fixtureList){
-        Fixture lastFixture;
 
         Collections.sort(fixtureList, (m1, m2) -> {
             SimpleDateFormat apiDateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm a");
@@ -59,7 +59,7 @@ public class WinCalcUtil {
             return parsedHomeDate.compareTo(parsedAwayDate);
         });
 
-
+        logger.error("SORTED FIXTURES LIST" + gson.toJson(fixtureList));
         return fixtureList.get(fixtureList.size()-1);
     }
 }

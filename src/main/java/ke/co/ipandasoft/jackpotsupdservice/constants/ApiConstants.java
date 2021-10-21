@@ -12,7 +12,7 @@ public class ApiConstants {
     public static final String API_TIMEZONE_CONSTANT="Africa/Nairobi";
 
     //MY JACKPOTS DATA API AUTH
-    public static final String JACKPOT_PREDICTIONS_NET_BASE_URL="https://jackpotsadmin.soccerjackpottips.com/";
+    public static final String JACKPOT_PREDICTIONS_NET_BASE_URL="https://adminpanel.soccerjackpottips.com/";
 
     //BEARER TOKEN
     public static final String BEARER_TOKEN_HEADER ="Bearer"+" ";
@@ -35,4 +35,6 @@ public class ApiConstants {
     public static final String MATCH_CANCELLED="canc";
     public static final String MATCH_STATUS_API_ERROR="errorgen";
     public static final String JACKPOT_ENDED="jackpot_ended";
+
+    public static final String MATCH_STATUS_PENDING ="pending";
 }
