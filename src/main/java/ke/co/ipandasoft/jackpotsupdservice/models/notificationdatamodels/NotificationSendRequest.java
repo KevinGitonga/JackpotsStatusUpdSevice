@@ -18,6 +18,17 @@ public class NotificationSendRequest {
     @SerializedName("data")
     @Expose
     private Data data;
+    @SerializedName("time_to_live")
+    @Expose
+    private Integer notificationTimeToLive;
+
+    public Integer getNotificationTimeToLive() {
+        return notificationTimeToLive;
+    }
+
+    public void setNotificationTimeToLive(Integer notificationTimeToLive) {
+        this.notificationTimeToLive = notificationTimeToLive;
+    }
 
     public String getTo() {
         return to;

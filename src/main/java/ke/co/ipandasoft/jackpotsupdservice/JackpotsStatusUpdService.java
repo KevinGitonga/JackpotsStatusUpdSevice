@@ -29,6 +29,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public class JackpotsStatusUpdService implements HttpFunction {
@@ -122,11 +123,14 @@ public class JackpotsStatusUpdService implements HttpFunction {
         data.setKey1("Value for key_1");
         data.setKey2("Value for key_1");
 
+        String currentTimeStamp = String.valueOf(new Date().getTime());
+
         NotificationSendRequest notificationSendRequest = new NotificationSendRequest();
         notificationSendRequest.setNotification(notification);
         notificationSendRequest.setData(data);
-        notificationSendRequest.setCollapseKey("type_a");
+        notificationSendRequest.setCollapseKey(currentTimeStamp);
         notificationSendRequest.setTo(ApiConstants.SJT_MAIN_NOTIFICATIONS_CHANNEL);
+        notificationSendRequest.setNotificationTimeToLive(ApiConstants.DEFAULT_NOTIFICATION_TTL_CONFIG);
 
         NotificationSendResponse notificationSendResponse= fcmApiSyncClient.sendEventNotification(notificationSendRequest);
 

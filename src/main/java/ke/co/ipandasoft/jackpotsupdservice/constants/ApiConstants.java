@@ -41,6 +41,7 @@ public class ApiConstants {
     //FIREBASE NOTIFICATION CONTANTS
     public static final String FCM_NET_BASE_URL ="https://fcm.googleapis.com/" ;
     public static final String FIREBASE_MESSAGING_API_KEY ="AAAAv9A6hv0:APA91bE1Vbm0VxigYT6O0dqgS1yWih9uHUU4jGii9m4g_9HJ7qp1sQt4116axyj3bMswYq4dOipswT_eBbMvzT-AsEELTW31ey0weeQ4xmCoW0YPb9EQVVbAVh3hq1rIsF8QkmYLkohFp89-Z_2Tk0YEx7__MPO4oA";
+    public static final Integer DEFAULT_NOTIFICATION_TTL_CONFIG = 259200;
 
     //FCM MESSAGE BODY TEXT
     public static String JACKPOTS_CREATED_START_TAG ="\uD83C\uDFC6\uD83C\uDFC6\uD83C\uDFC6"+" "+ "Hello Jackpot punter";
