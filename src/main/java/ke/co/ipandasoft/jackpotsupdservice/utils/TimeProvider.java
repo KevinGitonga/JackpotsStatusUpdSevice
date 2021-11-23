@@ -78,4 +78,10 @@ public class TimeProvider {
             return false;
         }
     }
+
+    public static Long getLocalizedTimestamp(){
+        TimeZone timeZone = TimeZone.getTimeZone("EAT");
+        Calendar calendar = Calendar.getInstance(timeZone);
+        return calendar.getTimeInMillis();
+    }
 }

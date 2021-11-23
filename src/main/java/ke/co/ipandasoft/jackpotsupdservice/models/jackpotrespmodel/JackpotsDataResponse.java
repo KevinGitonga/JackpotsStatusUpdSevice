@@ -19,7 +19,7 @@ public class JackpotsDataResponse {
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
-    @SerializedName("category")
+    @SerializedName("categories")
     @Expose
     private Category category;
     @SerializedName("jackpot_start_date")

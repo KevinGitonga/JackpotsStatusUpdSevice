@@ -5,6 +5,9 @@ import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
 import com.google.gson.Gson;
 import ke.co.ipandasoft.jackpotsupdservice.constants.ApiConstants;
+import ke.co.ipandasoft.jackpotsupdservice.fcmnotificationsnetwork.FcmApiClient;
+import ke.co.ipandasoft.jackpotsupdservice.fcmnotificationsnetwork.FcmApiService;
+import ke.co.ipandasoft.jackpotsupdservice.fcmnotificationsnetwork.FcmApiSyncClient;
 import ke.co.ipandasoft.jackpotsupdservice.jackpotsapinetwork.JackpotsApiClient;
 import ke.co.ipandasoft.jackpotsupdservice.jackpotsapinetwork.JackpotsApiService;
 import ke.co.ipandasoft.jackpotsupdservice.jackpotsapinetwork.JackpotsApiSyncClient;
@@ -14,6 +17,12 @@ import ke.co.ipandasoft.jackpotsupdservice.models.apipostdatamodel.JpWinLostData
 import ke.co.ipandasoft.jackpotsupdservice.models.apipostdatamodel.apiauth.ApiAuthResponse;
 import ke.co.ipandasoft.jackpotsupdservice.models.jackpotrespmodel.Fixture;
 import ke.co.ipandasoft.jackpotsupdservice.models.jackpotrespmodel.JackpotsDataResponse;
+import ke.co.ipandasoft.jackpotsupdservice.models.notificationapimodels.NotificationPostRequest;
+import ke.co.ipandasoft.jackpotsupdservice.models.notificationapimodels.NotificationPostResponse;
+import ke.co.ipandasoft.jackpotsupdservice.models.notificationdatamodels.Data;
+import ke.co.ipandasoft.jackpotsupdservice.models.notificationdatamodels.Notification;
+import ke.co.ipandasoft.jackpotsupdservice.models.notificationdatamodels.NotificationSendRequest;
+import ke.co.ipandasoft.jackpotsupdservice.models.notificationdatamodels.NotificationSendResponse;
 import ke.co.ipandasoft.jackpotsupdservice.utils.TimeProvider;
 import ke.co.ipandasoft.jackpotsupdservice.utils.WinCalcUtil;
 import org.apache.log4j.BasicConfigurator;
@@ -26,6 +35,10 @@ public class JackpotsStatusUpdService implements HttpFunction {
 
     //DATA LOGGER
     public static final Logger logger = Logger.getLogger(JackpotsStatusUpdService.class);
+
+    //NOTIFICATION API
+    private FcmApiService fcmApiService;
+    private FcmApiSyncClient fcmApiSyncClient;
 
     //JACKPOTS-API
     private JackpotsApiService jackpotsApiService;
@@ -62,7 +75,7 @@ public class JackpotsStatusUpdService implements HttpFunction {
         initLoadJackpots();
     }
 
-    private void initLoadJackpots() {
+    private void initLoadJackpots() throws IOException {
         jackpotsApiService= JackpotsApiClient.jackpotsApiService();
         jackpotsApiSyncClient=new JackpotsApiSyncClient(jackpotsApiService);
         List<JackpotsDataResponse> jackpotsDataResponseList = jackpotsApiSyncClient.loadPendingJackpotForUpd(apiAuthUserToken);
@@ -85,9 +98,54 @@ public class JackpotsStatusUpdService implements HttpFunction {
         }
     }
 
-    private void updateJackpotGamesStatus(JackpotsDataResponse jackpotsDataResponse) {
-        logger.info("JACKPOT OBJ BEING POSTED TO API"+gson.toJson(jackpotsDataResponse));
+    private void updateJackpotGamesStatus(JackpotsDataResponse jackpotsDataResponse) throws IOException {
+        logger.info("JACKPOT OBJ BEING POSTED TO API CAT"+gson.toJson(jackpotsDataResponse.getCategory()));
         jackpotsApiSyncClient.updateJackpotObjStatus(apiAuthUserToken,jackpotsDataResponse,jackpotsDataResponse.getId());
+        sendPushNotification(jackpotsDataResponse);
+    }
+
+    private void sendPushNotification(JackpotsDataResponse jackpotsDataResponse) throws IOException {
+        fcmApiService= FcmApiClient.fcmApiService();
+        fcmApiSyncClient=new FcmApiSyncClient(fcmApiService);
+
+        Notification notification = new Notification();
+        notification.setTitle("Soccer Jackpot Tips");
+
+        String jackpotCategory = jackpotsDataResponse.getCategory().getJackpotCategoryName();
+        String jackpotTotalWonGames = jackpotsDataResponse.getTotalFixturesWon();
+        String jackpotTotalLost = jackpotsDataResponse.getTotalFixturesLost();
+
+        logger.info("CATEGORY TOTAL WON"+jackpotCategory+jackpotTotalWonGames);
+        notification.setBody(ApiConstants.JACKPOTS_RESULT_UPDATED_START_TAG + " "+ jackpotCategory +" "+ApiConstants.JACKPOT_START_DATE_TAG+ " "+jackpotsDataResponse.getJackpotStartDate()+" "+ApiConstants.JACKPOT_RESULT_UPDATED_MIDDLE_TAG +" "+jackpotTotalWonGames+" "+ApiConstants.JACKPOT_RESULT_UPDATED_AND_TAG+" "+jackpotTotalLost+" "+ApiConstants.JACKPOT_RESULT_UPDATED_END_TAG);
+
+        Data data = new Data();
+        data.setKey1("Value for key_1");
+        data.setKey2("Value for key_1");
+
+        NotificationSendRequest notificationSendRequest = new NotificationSendRequest();
+        notificationSendRequest.setNotification(notification);
+        notificationSendRequest.setData(data);
+        notificationSendRequest.setCollapseKey("type_a");
+        notificationSendRequest.setTo(ApiConstants.SJT_MAIN_NOTIFICATIONS_CHANNEL);
+
+        NotificationSendResponse notificationSendResponse= fcmApiSyncClient.sendEventNotification(notificationSendRequest);
+
+        if (notificationSendResponse.getMessageId() != null){
+            logger.error("NOTIFICATION SEND SUCCESS TO TOPIC" + gson.toJson(notificationSendResponse));
+            postNotificationToApi(notification);
+        }
+    }
+
+    private void postNotificationToApi(Notification notification) {
+        NotificationPostRequest notificationPostRequest = new NotificationPostRequest();
+        notificationPostRequest.setNotificationTitle(notification.getTitle());
+        notificationPostRequest.setNotificationMessage(notification.getBody());
+        notificationPostRequest.setNotificationTimestamp(TimeProvider.getLocalizedTimestamp().toString());
+        NotificationPostResponse notificationPostResponse = jackpotsApiSyncClient.postNotification(apiAuthUserToken,notificationPostRequest);
+
+        if (notificationPostResponse.getNotificationMessage() != null){
+            logger.error("NOTIFICATION SAVED TO API SUCCESS" + gson.toJson(notificationPostResponse));
+        }
     }
 
 }

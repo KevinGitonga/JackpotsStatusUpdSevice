@@ -4,6 +4,8 @@ import ke.co.ipandasoft.jackpotsupdservice.models.apipostdatamodel.ApiAuthPayloa
 import ke.co.ipandasoft.jackpotsupdservice.models.apipostdatamodel.FixturesPostModel;
 import ke.co.ipandasoft.jackpotsupdservice.models.apipostdatamodel.apiauth.ApiAuthResponse;
 import ke.co.ipandasoft.jackpotsupdservice.models.jackpotrespmodel.JackpotsDataResponse;
+import ke.co.ipandasoft.jackpotsupdservice.models.notificationapimodels.NotificationPostRequest;
+import ke.co.ipandasoft.jackpotsupdservice.models.notificationapimodels.NotificationPostResponse;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -19,5 +21,8 @@ public interface JackpotsApiService {
 
     @PUT("jackpots/{id}")
     Call<Void> updateJackpotStatus(@Header("Authorization") String authToken, @Body JackpotsDataResponse jackpotsDataResponse,@Path("id") String jackpotId);
+
+    @POST("notifications")
+    Call<NotificationPostResponse> postNotification(@Header("Authorization") String authToken, @Body NotificationPostRequest notificationPostRequest);
 
 }
