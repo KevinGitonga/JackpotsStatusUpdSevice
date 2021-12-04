@@ -82,6 +82,8 @@ public class JackpotsStatusUpdService implements HttpFunction {
         List<JackpotsDataResponse> jackpotsDataResponseList = jackpotsApiSyncClient.loadPendingJackpotForUpd(apiAuthUserToken);
         logger.info("IST JACKPOT DATA OBJ"+gson.toJson(jackpotsDataResponseList.get(0)));
 
+        //Function to check if all games are done
+
         for (int i = 0; i < jackpotsDataResponseList.size(); i++) {
             JackpotsDataResponse jackpotsDataResponse = jackpotsDataResponseList.get(i);
             List<Fixture> fixtureList = jackpotsDataResponse.getFixtures();
@@ -89,7 +91,7 @@ public class JackpotsStatusUpdService implements HttpFunction {
 
             logger.info("LAST JACKPOT DATA OBJ"+gson.toJson(lastFixture));
 
-            if (!lastFixture.getFixtureAiTipStatus().equals(ApiConstants.MATCH_STATUS_PENDING) && TimeProvider.isJackpotCompleted(lastFixture.getFixtureDate(),lastFixture.getFixtureEatTime())){
+            if (!lastFixture.getFixtureAiTipStatus().equals(ApiConstants.MATCH_STATUS_PENDING) && TimeProvider.isJackpotCompleted(lastFixture.getFixtureDate(),lastFixture.getFixtureEatTime()) && WinCalcUtil.checkNoGamePending(fixtureList)){
                 JpWinLostDataModel jpWinLostDataModel = WinCalcUtil.checkWinners(fixtureList);
                 jackpotsDataResponse.setJackpotStatus(ApiConstants.JACKPOT_ENDED);
                 jackpotsDataResponse.setTotalFixturesWon(jpWinLostDataModel.getWonFixtures()+"/"+fixtureList.size());

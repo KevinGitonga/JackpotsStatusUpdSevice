@@ -1,10 +1,12 @@
 package ke.co.ipandasoft.jackpotsupdservice.utils;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import static ke.co.ipandasoft.jackpotsupdservice.JackpotsStatusUpdService.logger;
 
@@ -75,6 +77,22 @@ public class TimeProvider {
         }
         else{
             logger.info("JACKPOT GAMES NOT COMPLETED");
+            return false;
+        }
+    }
+
+    public static final Boolean isJackpotCompletedTest(Integer matchUtcTimestamp){
+        Long matchTimestamp = matchUtcTimestamp.longValue();
+        Long localTimestamp = Instant.now().getEpochSecond();
+        logger.info("LOCAL TIMESTAMP" +" "+ localTimestamp);
+        logger.info("MATCH UTC TIMESTAMP"+" "+matchTimestamp);
+
+        if(localTimestamp > matchTimestamp){
+            logger.info("MATCH STARTED");
+            return true;
+        }
+        else{
+            logger.info("MATCH NOT STARTED");
             return false;
         }
     }

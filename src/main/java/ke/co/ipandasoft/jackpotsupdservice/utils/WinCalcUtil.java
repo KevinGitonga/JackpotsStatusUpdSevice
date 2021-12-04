@@ -62,4 +62,22 @@ public class WinCalcUtil {
         logger.error("SORTED FIXTURES LIST" + gson.toJson(fixtureList));
         return fixtureList.get(fixtureList.size()-1);
     }
+
+    public static final Boolean checkNoGamePending(List<Fixture> fixtureList){
+
+        Integer pendingMatchesCount = 0;
+
+        for (int x = 0; x<fixtureList.size(); x++){
+            if (fixtureList.get(x).getFixtureAiTipStatus().equals(ApiConstants.MATCH_STATUS_PENDING)){
+                pendingMatchesCount++;
+            }
+        }
+
+        if (pendingMatchesCount == 0){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
