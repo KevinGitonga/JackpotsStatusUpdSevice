@@ -9,12 +9,6 @@ public class NotificationSendRequest {
     @SerializedName("to")
     @Expose
     private String to;
-    @SerializedName("collapse_key")
-    @Expose
-    private String collapseKey;
-    @SerializedName("notification")
-    @Expose
-    private Notification notification;
     @SerializedName("data")
     @Expose
     private Data data;
@@ -36,22 +30,6 @@ public class NotificationSendRequest {
 
     public void setTo(String to) {
         this.to = to;
-    }
-
-    public String getCollapseKey() {
-        return collapseKey;
-    }
-
-    public void setCollapseKey(String collapseKey) {
-        this.collapseKey = collapseKey;
-    }
-
-    public Notification getNotification() {
-        return notification;
-    }
-
-    public void setNotification(Notification notification) {
-        this.notification = notification;
     }
 
     public Data getData() {

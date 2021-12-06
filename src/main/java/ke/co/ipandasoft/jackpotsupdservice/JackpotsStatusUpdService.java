@@ -111,26 +111,27 @@ public class JackpotsStatusUpdService implements HttpFunction {
         fcmApiService= FcmApiClient.fcmApiService();
         fcmApiSyncClient=new FcmApiSyncClient(fcmApiService);
 
-        Notification notification = new Notification();
-        notification.setTitle("Soccer Jackpot Tips");
-
         String jackpotCategory = jackpotsDataResponse.getCategory().getJackpotCategoryName();
         String jackpotTotalWonGames = jackpotsDataResponse.getTotalFixturesWon();
         String jackpotTotalLost = jackpotsDataResponse.getTotalFixturesLost();
 
         logger.info("CATEGORY TOTAL WON"+jackpotCategory+jackpotTotalWonGames);
-        notification.setBody(ApiConstants.JACKPOTS_RESULT_UPDATED_START_TAG + " "+ jackpotCategory +" "+ApiConstants.JACKPOT_START_DATE_TAG+ " "+jackpotsDataResponse.getJackpotStartDate()+" "+ApiConstants.JACKPOT_RESULT_UPDATED_MIDDLE_TAG +" "+jackpotTotalWonGames+" "+ApiConstants.JACKPOT_RESULT_UPDATED_AND_TAG+" "+jackpotTotalLost+" "+ApiConstants.JACKPOT_RESULT_UPDATED_END_TAG);
 
+        String notificationTitle ="Soccer Jackpot Tips";
+        String notificationMessageBody = ApiConstants.JACKPOTS_RESULT_UPDATED_START_TAG + " "+ jackpotCategory +" "+ApiConstants.JACKPOT_START_DATE_TAG+ " "+jackpotsDataResponse.getJackpotStartDate()+" "+ApiConstants.JACKPOT_RESULT_UPDATED_MIDDLE_TAG +" "+jackpotTotalWonGames+" "+ApiConstants.JACKPOT_RESULT_UPDATED_AND_TAG+" "+jackpotTotalLost+" "+ApiConstants.JACKPOT_RESULT_UPDATED_END_TAG;
+
+
+        Notification notification = new Notification();
+        notification.setTitle(notificationTitle);
+
+        //Implementing sending message through data to persist notification even when device offline
         Data data = new Data();
-        data.setKey1("Value for key_1");
-        data.setKey2("Value for key_1");
+        data.setKey1(notificationTitle);
+        data.setKey2(notificationMessageBody);
 
-        String currentTimeStamp = String.valueOf(new Date().getTime());
 
         NotificationSendRequest notificationSendRequest = new NotificationSendRequest();
-        notificationSendRequest.setNotification(notification);
         notificationSendRequest.setData(data);
-        notificationSendRequest.setCollapseKey(currentTimeStamp);
         notificationSendRequest.setTo(ApiConstants.SJT_MAIN_NOTIFICATIONS_CHANNEL);
         notificationSendRequest.setNotificationTimeToLive(ApiConstants.DEFAULT_NOTIFICATION_TTL_CONFIG);
 
