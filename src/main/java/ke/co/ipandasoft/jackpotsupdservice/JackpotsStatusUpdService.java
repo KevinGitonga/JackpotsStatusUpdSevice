@@ -123,6 +123,7 @@ public class JackpotsStatusUpdService implements HttpFunction {
 
         Notification notification = new Notification();
         notification.setTitle(notificationTitle);
+        notification.setBody(notificationMessageBody);
 
         //Implementing sending message through data to persist notification even when device offline
         Data data = new Data();
