@@ -92,6 +92,9 @@ public class JackpotsStatusUpdService implements HttpFunction {
             logger.info("LAST JACKPOT DATA OBJ"+gson.toJson(lastFixture));
 
             if (!lastFixture.getFixtureAiTipStatus().equals(ApiConstants.MATCH_STATUS_PENDING) && TimeProvider.isJackpotCompleted(lastFixture.getFixtureDate(),lastFixture.getFixtureEatTime()) && WinCalcUtil.checkNoGamePending(fixtureList)){
+
+                //&& WinCalcUtil.checkNoGamePending(fixtureList)
+
                 JpWinLostDataModel jpWinLostDataModel = WinCalcUtil.checkWinners(fixtureList);
                 jackpotsDataResponse.setJackpotStatus(ApiConstants.JACKPOT_ENDED);
                 jackpotsDataResponse.setTotalFixturesWon(jpWinLostDataModel.getWonFixtures()+"/"+fixtureList.size());

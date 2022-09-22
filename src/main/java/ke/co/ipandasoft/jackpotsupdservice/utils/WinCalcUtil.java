@@ -52,10 +52,9 @@ public class WinCalcUtil {
                 parsedHomeDate = apiDateFormatter.parse(m1.getFixtureDate()+" "+m1.getFixtureEatTime());
                 parsedAwayDate = apiDateFormatter.parse(m2.getFixtureDate()+" "+m2.getFixtureEatTime());
             }catch (Exception exception){
+                logger.info("FIXTURE PARSE ERROR"+gson.toJson(m1));
                 logger.error(exception.getMessage());
             }
-
-
             return parsedHomeDate.compareTo(parsedAwayDate);
         });
 
