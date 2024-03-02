@@ -43,8 +43,9 @@ public class WinCalcUtil {
     public static final Fixture getLastPlayFixture(List<Fixture> fixtureList){
 
         Collections.sort(fixtureList, (m1, m2) -> {
-            SimpleDateFormat apiDateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm a");
+            SimpleDateFormat apiDateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+            //2024-02-28 20:30:00
             Date parsedHomeDate = null;
             Date parsedAwayDate = null;
 
