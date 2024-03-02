@@ -42,22 +42,7 @@ public class WinCalcUtil {
 
     public static final Fixture getLastPlayFixture(List<Fixture> fixtureList){
 
-        Collections.sort(fixtureList, (m1, m2) -> {
-            SimpleDateFormat apiDateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            //2024-02-28 20:30:00
-            Date parsedHomeDate = null;
-            Date parsedAwayDate = null;
-
-            try {
-                parsedHomeDate = apiDateFormatter.parse(m1.getFixtureDate()+" "+m1.getFixtureEatTime());
-                parsedAwayDate = apiDateFormatter.parse(m2.getFixtureDate()+" "+m2.getFixtureEatTime());
-            }catch (Exception exception){
-                logger.info("FIXTURE PARSE ERROR"+gson.toJson(m1));
-                logger.error(exception.getMessage());
-            }
-            return parsedHomeDate.compareTo(parsedAwayDate);
-        });
+        Collections.sort(fixtureList, Comparator.comparing(Fixture::getFixtureUtcTimestamp));
 
         logger.error("SORTED FIXTURES LIST" + gson.toJson(fixtureList));
         return fixtureList.get(fixtureList.size()-1);

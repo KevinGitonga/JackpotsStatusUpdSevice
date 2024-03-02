@@ -25,7 +25,7 @@ public class JackpotsApiSyncClient {
     }
 
     public List<JackpotsDataResponse> loadPendingJackpotForUpd(String token){
-        return SyncRequestExec.executeSync(jackpotsApiService.loadJackpotsForUpd(ApiConstants.BEARER_TOKEN_HEADER+token,"id:desc","jackpot_pending"));
+        return SyncRequestExec.executeSync(jackpotsApiService.loadJackpotsForUpd(ApiConstants.BEARER_TOKEN_HEADER+token,"id:DESC","50","jackpot_pending"));
     }
 
     public void updateJackpotObjStatus(String token,JackpotsDataResponse jackpotsDataResponse,Integer jackpotId){

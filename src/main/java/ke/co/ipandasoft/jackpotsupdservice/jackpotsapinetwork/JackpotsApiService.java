@@ -17,7 +17,7 @@ public interface JackpotsApiService {
     Call<ApiAuthResponse> authenticateUser(@Body ApiAuthPayload apiAuthPayload);
 
     @GET("jackpots")
-    Call<List<JackpotsDataResponse>> loadJackpotsForUpd(@Header("Authorization") String authToken, @Query("_sort") String sortBy,@Query("jackpot_status") String jackpotStatus);
+    Call<List<JackpotsDataResponse>> loadJackpotsForUpd(@Header("Authorization") String authToken, @Query("_sort") String sortBy,@Query("_limit") String dataLimit,@Query("jackpot_status") String jackpotStatus);
 
     @PUT("jackpots/{id}")
     Call<Void> updateJackpotStatus(@Header("Authorization") String authToken, @Body JackpotsDataResponse jackpotsDataResponse,@Path("id") String jackpotId);
