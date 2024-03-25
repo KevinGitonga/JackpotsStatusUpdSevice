@@ -57,12 +57,25 @@ public class TimeProvider {
         //dateFormat.setTimeZone(TimeZone.getTimeZone("EAT"));
         Date actualMatchDate=null;
 
-        try{
-            actualMatchDate=dateFormat.parse(matchDate+" "+matchTime);
+        SimpleDateFormat dateFormatFallback = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        if (matchTime.contains("AM") || matchTime.contains("PM")){
+            try{
+                actualMatchDate=dateFormat.parse(matchDate+" "+matchTime);
+            }
+            catch (Exception ex){
+                logger.info("ERROR PARSE DATE"+ex.getLocalizedMessage());
+            }
         }
-        catch (Exception ex){
-            logger.info("ERROR PARSE DATE"+ex.getLocalizedMessage());
+        else {
+            try{
+                actualMatchDate=dateFormatFallback.parse(matchDate+" "+matchTime);
+            }
+            catch (Exception ex){
+                logger.info("ERROR PARSE DATE"+ex.getLocalizedMessage());
+            }
         }
+
 
         //String apiDatePattern = "yyyy-MM-dd HH:mm a";
         Date todaysDate=new Date();
