@@ -83,23 +83,27 @@ public class JackpotsStatusUpdService implements HttpFunction {
         logger.info("IST JACKPOT DATA OBJ"+gson.toJson(jackpotsDataResponseList.get(0)));
 
         //Function to check if all games are done
-
         for (int i = 0; i < jackpotsDataResponseList.size(); i++) {
             JackpotsDataResponse jackpotsDataResponse = jackpotsDataResponseList.get(i);
             List<Fixture> fixtureList = jackpotsDataResponse.getFixtures();
-            Fixture lastFixture = WinCalcUtil.getLastPlayFixture(fixtureList);
+            if (!fixtureList.isEmpty()){
+                Fixture lastFixture = WinCalcUtil.getLastPlayFixture(fixtureList);
 
-            logger.info("LAST JACKPOT DATA OBJ"+gson.toJson(lastFixture));
+                logger.info("LAST JACKPOT DATA OBJ"+gson.toJson(lastFixture));
 
-            if (!lastFixture.getFixtureAiTipStatus().equals(ApiConstants.MATCH_STATUS_PENDING) && TimeProvider.isJackpotCompleted(lastFixture.getFixtureDate(),lastFixture.getFixtureEatTime()) && WinCalcUtil.checkNoGamePending(fixtureList)){
+                if (!lastFixture.getFixtureAiTipStatus().equals(ApiConstants.MATCH_STATUS_PENDING) && TimeProvider.isJackpotCompleted(lastFixture.getFixtureDate(),lastFixture.getFixtureEatTime()) && WinCalcUtil.checkNoGamePending(fixtureList)){
 
-                //&& WinCalcUtil.checkNoGamePending(fixtureList)
+                    //&& WinCalcUtil.checkNoGamePending(fixtureList)
 
-                JpWinLostDataModel jpWinLostDataModel = WinCalcUtil.checkWinners(fixtureList);
-                jackpotsDataResponse.setJackpotStatus(ApiConstants.JACKPOT_ENDED);
-                jackpotsDataResponse.setTotalFixturesWon(jpWinLostDataModel.getWonFixtures()+"/"+fixtureList.size());
-                jackpotsDataResponse.setTotalFixturesLost(jpWinLostDataModel.getLostFixtures()+"/"+fixtureList.size());
-                updateJackpotGamesStatus(jackpotsDataResponse);
+                    JpWinLostDataModel jpWinLostDataModel = WinCalcUtil.checkWinners(fixtureList);
+                    jackpotsDataResponse.setJackpotStatus(ApiConstants.JACKPOT_ENDED);
+                    jackpotsDataResponse.setTotalFixturesWon(jpWinLostDataModel.getWonFixtures()+"/"+fixtureList.size());
+                    jackpotsDataResponse.setTotalFixturesLost(jpWinLostDataModel.getLostFixtures()+"/"+fixtureList.size());
+                    updateJackpotGamesStatus(jackpotsDataResponse);
+                }
+            }
+            else {
+                return;
             }
         }
     }
