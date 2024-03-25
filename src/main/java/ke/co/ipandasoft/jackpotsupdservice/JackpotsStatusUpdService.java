@@ -86,8 +86,8 @@ public class JackpotsStatusUpdService implements HttpFunction {
         for (int i = 0; i < jackpotsDataResponseList.size(); i++) {
             JackpotsDataResponse jackpotsDataResponse = jackpotsDataResponseList.get(i);
             List<Fixture> fixtureList = jackpotsDataResponse.getFixtures();
-            if (!fixtureList.isEmpty()){
-                Fixture lastFixture = WinCalcUtil.getLastPlayFixture(fixtureList);
+
+            Fixture lastFixture = WinCalcUtil.getLastPlayFixture(fixtureList);
 
                 logger.info("LAST JACKPOT DATA OBJ"+gson.toJson(lastFixture));
 
@@ -101,10 +101,6 @@ public class JackpotsStatusUpdService implements HttpFunction {
                     jackpotsDataResponse.setTotalFixturesLost(jpWinLostDataModel.getLostFixtures()+"/"+fixtureList.size());
                     updateJackpotGamesStatus(jackpotsDataResponse);
                 }
-            }
-            else {
-                return;
-            }
         }
     }
 
